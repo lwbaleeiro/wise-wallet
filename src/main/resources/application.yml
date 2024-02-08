@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: wise_wallet_db
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wise_wallet_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
