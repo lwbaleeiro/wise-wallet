@@ -1,4 +1,4 @@
-package br.com.lwbaleeiro.wisewallet;
+package br.com.wisewallet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

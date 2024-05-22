@@ -1,4 +1,4 @@
-package br.com.lwbaleeiro.wisewallet;
+package br.com.wisewallet;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
