@@ -3,7 +3,9 @@ package br.com.wisewallet.converter;
 import br.com.wisewallet.controller.user.form.CreateUserForm;
 import br.com.wisewallet.entity.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public record UserConverter(BCryptPasswordEncoder bCryptPasswordEncoder) {
 
     public User convert(CreateUserForm createUserForm) {

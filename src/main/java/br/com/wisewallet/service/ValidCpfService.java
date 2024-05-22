@@ -1,13 +1,14 @@
 package br.com.wisewallet.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ValidCpfService {
-
+    @Autowired
     private ValidCpfService() { }
 
-    public static boolean valid(String CPF) {
+    public boolean valid(String CPF) {
         // Remover caracteres não numéricos
         CPF = CPF.replaceAll("\\D", "");
 

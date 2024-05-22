@@ -20,15 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user")
 public class UsersController {
 
+    private final UserService userService;
     @Autowired
-    private UserService userService;
+    public UsersController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(summary = "Create a new user")
     @PostMapping("/create")
-    public ResponseEntity<UserResponse> create(final @RequestBody @Valid CreateUserForm createUserForm) {
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserForm createUserForm) {
 
-        log.info(" request user creation");
-
-        return ResponseEntity.ok(userService.createUser(createUserForm));
+        log.info("Request to create a user");
+        UserResponse response = userService.createUser(createUserForm);
+        return ResponseEntity.ok(response);
     }
 }
