@@ -6,16 +6,16 @@ import org.springframework.http.HttpStatus;
 public class UserAlreadyExistsWithEmailException extends BaseException {
     @Override
     public String getCode() {
-        return null;
+        return "wisewallet.user.database.error.userAlreadyExistsWithEmailException";
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return null;
+        return HttpStatus.CONFLICT;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return "A user with the provided email already exists.";
     }
 }

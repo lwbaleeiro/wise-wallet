@@ -6,16 +6,16 @@ import org.springframework.http.HttpStatus;
 public class UserCpfIsNotValidException extends BaseException {
     @Override
     public String getCode() {
-        return null;
+        return "wisewallet.user.validation.error.userCpfIsNotValidException";
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return null;
+        return HttpStatus.BAD_REQUEST;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return "The provided CPF is not valid.";
     }
 }

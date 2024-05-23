@@ -6,16 +6,17 @@ import org.springframework.http.HttpStatus;
 public class UserEmailNotValidException extends BaseException {
     @Override
     public String getCode() {
-        return null;
+        return "wisewallet.user.validation.error.userEmailNotValidException";
     }
 
     @Override
     public HttpStatus getHttpStatus() {
-        return null;
+        return HttpStatus.BAD_REQUEST;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return "The provided email is not valid.";
     }
 }
+
