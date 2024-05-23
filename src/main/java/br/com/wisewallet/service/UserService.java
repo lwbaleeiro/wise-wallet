@@ -8,6 +8,6 @@ import java.util.List;
 public interface UserService {
         UserResponse createUser(CreateUserForm user);
         UserResponse alterUser(CreateUserForm createUserForm);
-        UserResponse findUserById(String id);
+        UserResponse findUserById(Long id);
         List<UserResponse> findAll();
 }

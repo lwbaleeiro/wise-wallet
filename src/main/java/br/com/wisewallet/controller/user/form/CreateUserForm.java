@@ -11,7 +11,6 @@ public record CreateUserForm(@NotEmpty(message = "name cannot be empty!")
                              @NotEmpty(message = "email cannot be empty!")
                              String email,
                              @NotEmpty(message = "password cannot be empty!")
-                             String password,
-                             Boolean enabled) {
+                             String password) {
 
 }

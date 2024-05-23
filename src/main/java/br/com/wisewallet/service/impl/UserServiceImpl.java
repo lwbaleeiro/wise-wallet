@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
         log.info("Creating user");
         User user = userConverter.convert(createUserForm);
 
-        validateUser(user);
+        validateUser(user, Boolean.TRUE);
 
         try {
             userRepository.save(user);
@@ -52,14 +54,14 @@ public class UserServiceImpl implements UserService {
         return new UserResponse(user.getId(), user.getName(), user.getCpf(), user.getEmail());
     }
 
-    private void validateUser(User user) {
+    private void validateUser(User user, Boolean newUser) {
         if (!emailValidatorService.test(user.getEmail())) {
             throw new UserEmailNotValidException();
         }
         if (!validCpfService.valid(user.getCpf())) {
             throw new UserCpfIsNotValidException();
         }
-        checkUserAlreadyExists(user);
+        if (newUser) checkUserAlreadyExists(user);
     }
 
     private void checkUserAlreadyExists(User user) {
@@ -73,19 +75,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse alterUser(CreateUserForm createUserForm) {
-        // Implementar lógica de alteração de usuário
+
         return null;
     }
 
     @Override
-    public UserResponse findUserById(String id) {
-        // Implementar lógica de busca de usuário por ID
-        return null;
+    public UserResponse findUserById(Long id) {
+
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return new UserResponse(user.get().getId(), user.get().getName(), user.get().getCpf(), user.get().getEmail());
+        } else {
+            throw new UserNotFoundException();
+        }
     }
 
     @Override
     public List<UserResponse> findAll() {
-        // Implementar lógica de busca de todos os usuários
-        return null;
+        List<UserResponse> userResponseList = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            userResponseList.add(new UserResponse(user.getId(), user.getName(), user.getCpf(), user.getEmail()));
+        }
+
+        return userResponseList;
     }
 }
