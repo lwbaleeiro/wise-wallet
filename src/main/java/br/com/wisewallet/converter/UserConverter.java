@@ -17,7 +17,7 @@ public record UserConverter(BCryptPasswordEncoder bCryptPasswordEncoder) {
                 .name(createUserForm.name())
                 .email(createUserForm.email())
                 .password(bCryptPasswordEncoder.encode(createUserForm.password()))
-                .enabled(Boolean.FALSE)
+                .enabled(Boolean.TRUE)
                 .build();
     }
 }
