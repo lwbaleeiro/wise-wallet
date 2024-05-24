@@ -1,4 +1,4 @@
-package br.com.wisewallet.service;
+package br.com.wisewallet.service.user;
 
 import java.util.function.Predicate;
 import java.util.regex.Matcher;

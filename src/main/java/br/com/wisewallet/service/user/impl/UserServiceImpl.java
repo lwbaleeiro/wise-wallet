@@ -1,4 +1,4 @@
-package br.com.wisewallet.service.impl;
+package br.com.wisewallet.service.user.impl;
 
 import br.com.wisewallet.controller.user.form.CreateUserForm;
 import br.com.wisewallet.controller.user.response.UserResponse;
@@ -6,9 +6,9 @@ import br.com.wisewallet.converter.UserConverter;
 import br.com.wisewallet.entity.User;
 import br.com.wisewallet.exceptions.*;
 import br.com.wisewallet.repository.UserRepository;
-import br.com.wisewallet.service.EmailValidatorService;
-import br.com.wisewallet.service.UserService;
-import br.com.wisewallet.service.ValidCpfService;
+import br.com.wisewallet.service.user.EmailValidatorService;
+import br.com.wisewallet.service.user.UserService;
+import br.com.wisewallet.service.user.ValidCpfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-     private final EmailValidatorService emailValidatorService;
+    private final EmailValidatorService emailValidatorService;
     private final ValidCpfService validCpfService;
 
     @Autowired
@@ -85,10 +85,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse findUserById(Long id) {
-
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             return new UserResponse(user.get().getId(), user.get().getName(), user.get().getCpf(), user.get().getEmail());
+        } else {
+            throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user;
         } else {
             throw new UserNotFoundException();
         }

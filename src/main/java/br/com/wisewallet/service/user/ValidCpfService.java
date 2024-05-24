@@ -1,4 +1,4 @@
-package br.com.wisewallet.service;
+package br.com.wisewallet.service.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

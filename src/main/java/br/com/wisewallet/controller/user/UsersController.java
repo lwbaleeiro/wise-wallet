@@ -2,13 +2,12 @@ package br.com.wisewallet.controller.user;
 
 import br.com.wisewallet.controller.user.form.CreateUserForm;
 import br.com.wisewallet.controller.user.response.UserResponse;
-import br.com.wisewallet.service.UserService;
+import br.com.wisewallet.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

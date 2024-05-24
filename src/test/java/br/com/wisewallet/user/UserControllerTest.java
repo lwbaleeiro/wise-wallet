@@ -3,7 +3,7 @@ package br.com.wisewallet.user;
 import br.com.wisewallet.controller.user.UsersController;
 import br.com.wisewallet.controller.user.form.CreateUserForm;
 import br.com.wisewallet.controller.user.response.UserResponse;
-import br.com.wisewallet.service.UserService;
+import br.com.wisewallet.service.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
