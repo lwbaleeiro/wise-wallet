@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,8 +44,8 @@ public class UserServiceImpl implements UserService {
         User user = userConverter.convert(createUserForm);
 
         validateUser(user, Boolean.TRUE);
-
         try {
+            user.setEnabled(Boolean.TRUE);
             userRepository.save(user);
 
             return new UserResponse(user.getId(),
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
         validateUser(user, Boolean.FALSE);
 
         try {
+            user.setLastUpdate(LocalDateTime.now());
             User alteredUser = userRepository.save(user);
 
             return new UserResponse(alteredUser.getId(),
