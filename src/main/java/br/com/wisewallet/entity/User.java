@@ -34,4 +34,11 @@ public class User {
     @LastModifiedDate
     private LocalDateTime lastUpdate;
 
+    @PrePersist
+    protected void prePersist() {
+        if (this.enabled == null) {
+            this.enabled = true;
+        }
+    }
+
 }

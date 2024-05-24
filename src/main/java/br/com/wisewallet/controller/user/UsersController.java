@@ -35,9 +35,18 @@ public class UsersController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Alter a user")
+    @PutMapping("/alter")
+    public ResponseEntity<UserResponse> alter(final @RequestBody @Valid CreateUserForm createUserForm) {
+
+        log.info("Request to alter a user");
+        UserResponse response = userService.alterUser(createUserForm);
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Return an specific user by the id")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable @Valid Long id) {
+    public ResponseEntity<UserResponse> getById(@PathVariable @Valid Long id) {
 
         try {
             return ResponseEntity.ok(userService.findUserById(id));

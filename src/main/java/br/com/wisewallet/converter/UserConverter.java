@@ -12,6 +12,7 @@ public record UserConverter(BCryptPasswordEncoder bCryptPasswordEncoder) {
 
         return User
                 .builder()
+                .id(createUserForm.id())
                 .cpf(createUserForm.cpf())
                 .name(createUserForm.name())
                 .email(createUserForm.email())

@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
-    private final EmailValidatorService emailValidatorService;
+     private final EmailValidatorService emailValidatorService;
     private final ValidCpfService validCpfService;
 
     @Autowired
@@ -46,37 +46,39 @@ public class UserServiceImpl implements UserService {
 
         try {
             userRepository.save(user);
+
+            return new UserResponse(user.getId(),
+                    user.getName(),
+                    user.getCpf(),
+                    user.getEmail());
         } catch (Exception error) {
             log.error("Error: {}", error.getMessage());
             throw new CreateUserDatabaseException();
-        }
-
-        return new UserResponse(user.getId(), user.getName(), user.getCpf(), user.getEmail());
-    }
-
-    private void validateUser(User user, Boolean newUser) {
-        if (!emailValidatorService.test(user.getEmail())) {
-            throw new UserEmailNotValidException();
-        }
-        if (!validCpfService.valid(user.getCpf())) {
-            throw new UserCpfIsNotValidException();
-        }
-        if (newUser) checkUserAlreadyExists(user);
-    }
-
-    private void checkUserAlreadyExists(User user) {
-        if (userRepository.findByCpf(user.getCpf()).isPresent()) {
-            throw new UserAlreadyExistsWithCpfException();
-        }
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsWithEmailException();
         }
     }
 
     @Override
     public UserResponse alterUser(CreateUserForm createUserForm) {
+        log.info("Altering user");
+        User user = userConverter.convert(createUserForm);
 
-        return null;
+        Optional<User> optionalUser = userRepository.findById(user.getId());
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundByIdException();
+        }
+        validateUser(user, Boolean.FALSE);
+
+        try {
+            User alteredUser = userRepository.save(user);
+
+            return new UserResponse(alteredUser.getId(),
+                    alteredUser.getName(),
+                    alteredUser.getCpf(),
+                    alteredUser.getEmail());
+        } catch (Exception error) {
+            log.error("Error: {}", error.getMessage());
+            throw new AlterUserDatabaseException();
+        }
     }
 
     @Override
@@ -99,5 +101,24 @@ public class UserServiceImpl implements UserService {
         }
 
         return userResponseList;
+    }
+
+    private void validateUser(User user, Boolean newUser) {
+        if (!emailValidatorService.test(user.getEmail())) {
+            throw new UserEmailNotValidException();
+        }
+        if (!validCpfService.valid(user.getCpf())) {
+            throw new UserCpfIsNotValidException();
+        }
+        if (newUser) checkUserAlreadyExists(user);
+    }
+
+    private void checkUserAlreadyExists(User user) {
+        if (userRepository.findByCpf(user.getCpf()).isPresent()) {
+            throw new UserAlreadyExistsWithCpfException();
+        }
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsWithEmailException();
+        }
     }
 }
