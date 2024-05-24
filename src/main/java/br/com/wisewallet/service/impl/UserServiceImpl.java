@@ -106,7 +106,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUser(User user, Boolean newUser) {
-        if (!emailValidatorService.test(user.getEmail())) {
+        String email = user.getEmail();
+        if (!emailValidatorService.test(email)) {
             throw new UserEmailNotValidException();
         }
         if (!validCpfService.valid(user.getCpf())) {
