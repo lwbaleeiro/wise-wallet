@@ -1,7 +1,7 @@
 package br.com.wisewallet.controller.authentication;
 
 import br.com.wisewallet.controller.authentication.form.AuthenticationForm;
-import br.com.wisewallet.entity.User;
+import br.com.wisewallet.controller.authentication.response.AuthenticationResponse;
 import br.com.wisewallet.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -26,21 +26,9 @@ public class AuthenticationController {
     public ResponseEntity<?> login(@RequestBody AuthenticationForm authenticationForm) {
         try {
             String token = authService.authenticate(authenticationForm);
-            return ResponseEntity.ok(new AuthResponse(token));
+            return ResponseEntity.ok(new AuthenticationResponse(token, "Bearer"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
-    }
-
-    public static class AuthResponse {
-        private String token;
-
-        public AuthResponse(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
         }
     }
 }
