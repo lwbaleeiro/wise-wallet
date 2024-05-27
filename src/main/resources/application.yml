@@ -27,3 +27,19 @@ spring:
       host: localhost
       port: 27017
       database: wise_wallet_db
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: wise-wallet
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    template:
+      default-topic: statements
+
+#  mail:
+#    host: smtp.seuprovedor.com
+#    port: 587
+#    username: seuemail@provedor.com
+#    password: senha

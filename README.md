@@ -1,5 +1,7 @@
 # Docker
 
+- Precisa adicionar a library de JavaxMail.
+
 Para executar um arquivo Docker Compose no terminal, você precisa navegar até o diretório que contém o arquivo `docker-compose.yml` e, em seguida, usar o comando `docker-compose up` seguido de opções adicionais, se necessário. Aqui está uma explicação passo a passo:
 
 1. Abra um terminal ou prompt de comando.
