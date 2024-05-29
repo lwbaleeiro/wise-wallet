@@ -1,7 +1,7 @@
 package br.com.wisewallet.kafka;
 
-import br.com.wisewallet.entity.Expenses;
-import br.com.wisewallet.repository.ExpensesRepository;
+import br.com.wisewallet.entity.Transactions;
+import br.com.wisewallet.repository.TransactionsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -19,11 +19,11 @@ import java.nio.file.Path;
 public class KafkaFileProducer {
 
     private static final String TOPIC = "statements";
-    private final ExpensesRepository expensesRepository;
+    private final TransactionsRepository transactionsRepository;
 
     @Autowired
-    public KafkaFileProducer(ExpensesRepository expensesRepository) {
-        this.expensesRepository = expensesRepository;
+    public KafkaFileProducer(TransactionsRepository transactionsRepository) {
+        this.transactionsRepository = transactionsRepository;
     }
 
     public void sendMessage(Path filePath) {
@@ -37,15 +37,15 @@ public class KafkaFileProducer {
                 String identificador = csvRecord.get("Identificador");
                 String descricao = csvRecord.get("Descrição");
 
-                Expenses expenses = Expenses.builder()
+                Transactions transactions = Transactions.builder()
                         .data(data)
                         .identificador(identificador)
                         .descricao(descricao)
                         .valor(valor)
                         .build();
 
-                expensesRepository.save(expenses);
-                log.info("Saved CSV record to MongoDB: {}", expenses);
+                transactionsRepository.save(transactions);
+                log.info("Saved CSV record to MongoDB: {}", transactions);
             }
         } catch (IOException e) {
             e.printStackTrace();
