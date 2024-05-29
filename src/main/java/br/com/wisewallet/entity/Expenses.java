@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @Builder
-public class CSVRecordEntity {
+public class Expenses {
 
     @Id
     private String id;

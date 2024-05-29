@@ -1,7 +1,7 @@
 package br.com.wisewallet.kafka;
 
-import br.com.wisewallet.entity.CSVRecordEntity;
-import br.com.wisewallet.repository.CSVRecordRepository;
+import br.com.wisewallet.entity.Expenses;
+import br.com.wisewallet.repository.ExpensesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -19,11 +19,11 @@ import java.nio.file.Path;
 public class KafkaFileProducer {
 
     private static final String TOPIC = "statements";
-    private final CSVRecordRepository csvRecordRepository;
+    private final ExpensesRepository expensesRepository;
 
     @Autowired
-    public KafkaFileProducer(CSVRecordRepository csvRecordRepository) {
-        this.csvRecordRepository = csvRecordRepository;
+    public KafkaFileProducer(ExpensesRepository expensesRepository) {
+        this.expensesRepository = expensesRepository;
     }
 
     public void sendMessage(Path filePath) {
@@ -37,16 +37,15 @@ public class KafkaFileProducer {
                 String identificador = csvRecord.get("Identificador");
                 String descricao = csvRecord.get("Descrição");
 
-                CSVRecordEntity csvRecordEntity = CSVRecordEntity.builder()
+                Expenses expenses = Expenses.builder()
                         .data(data)
                         .identificador(identificador)
                         .descricao(descricao)
                         .valor(valor)
                         .build();
 
-                csvRecordRepository.save(csvRecordEntity);
-                System.out.println("salvo");
-                log.info("Saved CSV record to MongoDB: {}", csvRecordEntity);
+                expensesRepository.save(expenses);
+                log.info("Saved CSV record to MongoDB: {}", expenses);
             }
         } catch (IOException e) {
             e.printStackTrace();

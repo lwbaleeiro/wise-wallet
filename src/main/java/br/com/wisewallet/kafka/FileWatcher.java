@@ -1,10 +1,7 @@
 package br.com.wisewallet.kafka;
 
-import br.com.wisewallet.repository.CSVRecordRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
