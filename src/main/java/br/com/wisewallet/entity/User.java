@@ -2,7 +2,8 @@ package br.com.wisewallet.entity;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -10,10 +11,8 @@ import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.AUTO;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
+@Data
 @Builder
 @Entity(name = "users")
 public class User {

@@ -1,14 +1,12 @@
 package br.com.wisewallet.entity;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("cSVRecordEntity")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class Transactions {
 
