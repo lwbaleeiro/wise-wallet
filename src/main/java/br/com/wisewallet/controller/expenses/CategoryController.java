@@ -1,10 +1,12 @@
 package br.com.wisewallet.controller.expenses;
 
 import br.com.wisewallet.controller.expenses.form.CreateCategoryForm;
+import br.com.wisewallet.controller.expenses.response.CategoryResponse;
 import br.com.wisewallet.entity.Category;
 import br.com.wisewallet.service.transactions.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,8 @@ public class CategoryController {
 
     @Operation(summary = "Get all categorys")
     @GetMapping("/all")
-    public ResponseEntity<List<Category>> getAllCategorys() {
-        List<Category> categories = categoryService.findAll();
+    public ResponseEntity<List<CategoryResponse>> getAllCategorys(@RequestParam @Valid String userId) {
+        List<CategoryResponse> categories = categoryService.findAll(Long.valueOf(userId));
         return ResponseEntity.ok(categories);
     }
 

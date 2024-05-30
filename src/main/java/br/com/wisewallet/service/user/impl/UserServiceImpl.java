@@ -11,6 +11,7 @@ import br.com.wisewallet.service.user.UserService;
 import br.com.wisewallet.service.user.ValidCpfService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,16 +27,18 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final EmailValidatorService emailValidatorService;
     private final ValidCpfService validCpfService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            UserConverter userConverter,
                            EmailValidatorService emailValidatorService,
-                           ValidCpfService validCpfService) {
+                           ValidCpfService validCpfService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.emailValidatorService = emailValidatorService;
         this.validCpfService = validCpfService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -60,25 +63,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse alterUser(CreateUserForm createUserForm) {
-        log.info("Altering user");
-        User user = userConverter.convert(createUserForm);
+        log.info("Altering user with ID: {}", createUserForm.id());
 
-        Optional<User> optionalUser = userRepository.findById(user.getId());
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundByIdException();
-        }
-        validateUser(user, Boolean.FALSE);
+        User existingUser = userRepository.findById(createUserForm.id()).orElseThrow(UserNotFoundByIdException::new);
 
         try {
-            user.setLastUpdate(LocalDateTime.now());
-            User alteredUser = userRepository.save(user);
+            existingUser.setName(createUserForm.name());
+            existingUser.setCpf(createUserForm.cpf());
+            existingUser.setEmail(createUserForm.email());
+            existingUser.setPassword(passwordEncoder.encode(createUserForm.password()));
+            existingUser.setEnabled(createUserForm.enabled());
+            existingUser.setLastUpdate(LocalDateTime.now());
+
+            validateUser(existingUser, Boolean.FALSE);
+
+            User alteredUser = userRepository.save(existingUser);
 
             return new UserResponse(alteredUser.getId(),
                     alteredUser.getName(),
                     alteredUser.getCpf(),
                     alteredUser.getEmail());
+
         } catch (Exception error) {
-            log.error("Error: {}", error.getMessage());
+            log.error("Error altering user with ID {} | {}", createUserForm.id(), error.getMessage());
             throw new AlterUserDatabaseException();
         }
     }

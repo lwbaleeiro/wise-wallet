@@ -1,11 +1,10 @@
 package br.com.wisewallet.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -16,6 +15,8 @@ import static jakarta.persistence.GenerationType.AUTO;
 @Data
 @Builder
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category {
 
     @Id
@@ -24,6 +25,8 @@ public class Category {
     private Long id;
     private String description;
     private Boolean enabled;
+    @ManyToOne
+    private User user;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

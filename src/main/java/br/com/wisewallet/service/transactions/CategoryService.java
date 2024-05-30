@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> findAll();
+    List<CategoryResponse> findAll(Long userId);
     CategoryResponse createCategory(CreateCategoryForm categoryForm);
     CategoryResponse alterCategory(CreateCategoryForm categoryForm);
 }
