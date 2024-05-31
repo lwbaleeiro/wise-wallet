@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service("customFileWatcher")
 public class FileWatcher {
 
-    private final static String directoryToWatch = "C:/Users/lw_ba/OneDrive/Documents/Java/wise-wallet/src/main/resources/statements/";
+    private final static String directoryToWatch = "C:/Users/lw_ba/OneDrive/Documents/Java/wise-wallet/backend/src/main/resources/statements/";
 
     private final KafkaFileProducer kafkaFileProducer;
     private final Set<Path> processedFiles = new HashSet<>();
