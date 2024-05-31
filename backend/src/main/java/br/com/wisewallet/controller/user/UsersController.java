@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @Tag(name = "User API")
 @RequestMapping("/api/v1/user")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UsersController {
 
     private final UserService userService;
