@@ -18,7 +18,6 @@ import java.nio.file.Path;
 @Service
 public class KafkaFileProducer {
 
-    private static final String TOPIC = "statements";
     private final TransactionsRepository transactionsRepository;
 
     @Autowired
@@ -27,28 +26,36 @@ public class KafkaFileProducer {
     }
 
     public void sendMessage(Path filePath) {
+
+        if (!isFileReady(filePath)) {
+            log.warn("The file still in use: {}",  filePath);
+            return;
+        }
+
         try (Reader reader = Files.newBufferedReader(filePath);
              CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
 
             for (CSVRecord csvRecord : csvParser) {
 
-                String data = csvRecord.get("Data");
-                double valor = Double.parseDouble(csvRecord.get("Valor"));
-                String identificador = csvRecord.get("Identificador");
-                String descricao = csvRecord.get("Descrição");
-
                 Transactions transactions = Transactions.builder()
-                        .data(data)
-                        .identificador(identificador)
-                        .descricao(descricao)
-                        .valor(valor)
+                        .date(csvRecord.get("Data"))
+                        .identification(csvRecord.get("Identificador"))
+                        .description(csvRecord.get("Descrição"))
+                        .amount(Double.parseDouble(csvRecord.get("Valor")))
                         .build();
 
                 transactionsRepository.save(transactions);
-                log.info("Saved CSV record to MongoDB: {}", transactions);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean isFileReady(Path filePath) {
+        try (var channel = Files.newByteChannel(filePath)) {
+            return true;
+        }  catch (IOException e) {
+            return false;
         }
     }
 }

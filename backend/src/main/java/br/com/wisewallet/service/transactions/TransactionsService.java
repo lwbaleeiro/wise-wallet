@@ -7,10 +7,10 @@ import java.util.List;
 public interface TransactionsService {
 
     List<Transactions> findAll();
-    List<Transactions> findByDataBetween(String startDate, String endDate);
-    List<Transactions> findByValorGreaterThan();
+    List<Transactions> findByDateBetween(String startDate, String endDate);
+    List<Transactions> findByAmountGreaterThan();
 
-    List<Transactions> findByValorLessThan();
+    List<Transactions> findByAmountLessThan();
 
     List<Transactions> findIncomingByDate(String startDate, String endDate);
 

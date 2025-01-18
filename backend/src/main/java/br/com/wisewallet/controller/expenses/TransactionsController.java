@@ -39,7 +39,7 @@ public class TransactionsController {
     public ResponseEntity<List<Transactions>> getAllRecordsByDate(@RequestParam(required = false) String startDate,
                                                                   @RequestParam(required = false) String endDate) {
 
-        List<Transactions> records = transactionsService.findByDataBetween(startDate, endDate);
+        List<Transactions> records = transactionsService.findByDateBetween(startDate, endDate);
         return ResponseEntity.ok(records);
     }
 
@@ -47,7 +47,7 @@ public class TransactionsController {
     @GetMapping("/incoming/all")
     public ResponseEntity<List<Transactions>> getAllIncoming() {
 
-        List<Transactions> records = transactionsService.findByValorGreaterThan();
+        List<Transactions> records = transactionsService.findByAmountGreaterThan();
         return ResponseEntity.ok(records);
     }
 
@@ -64,7 +64,7 @@ public class TransactionsController {
     @GetMapping("/expenses/all")
     public ResponseEntity<List<Transactions>> getAllExpenses() {
 
-        List<Transactions> records = transactionsService.findByValorLessThan();
+        List<Transactions> records = transactionsService.findByAmountLessThan();
         return ResponseEntity.ok(records);
     }
 

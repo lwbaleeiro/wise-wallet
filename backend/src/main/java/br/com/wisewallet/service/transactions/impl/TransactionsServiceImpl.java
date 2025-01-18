@@ -11,15 +11,14 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ExpensesServiceImpl implements TransactionsService {
+public class TransactionsServiceImpl implements TransactionsService {
 
     private final TransactionsRepository transactionsRepository;
 
     @Autowired
-    public ExpensesServiceImpl(TransactionsRepository transactionsRepository) {
+    public TransactionsServiceImpl(TransactionsRepository transactionsRepository) {
         this.transactionsRepository = transactionsRepository;
     }
-
 
     @Override
     public List<Transactions> findAll() {
@@ -27,27 +26,27 @@ public class ExpensesServiceImpl implements TransactionsService {
     }
 
     @Override
-    public List<Transactions> findByDataBetween(String startDate, String endDate) {
-        return transactionsRepository.findByDataBetween(startDate, endDate);
+    public List<Transactions> findByDateBetween(String startDate, String endDate) {
+        return transactionsRepository.findByDateBetween(startDate, endDate);
     }
 
     @Override
-    public List<Transactions> findByValorGreaterThan() {
-        return transactionsRepository.findByValorGreaterThan(0d);
+    public List<Transactions> findByAmountGreaterThan() {
+        return transactionsRepository.findByAmountGreaterThan(0d);
     }
 
     @Override
     public List<Transactions> findIncomingByDate(String startDate, String endDate) {
-        return transactionsRepository.findByDataBetweenAndValorGreaterThan(startDate, endDate, 0d);
+        return transactionsRepository.findByDateBetweenAndAmountGreaterThan(startDate, endDate, 0d);
     }
 
     @Override
-    public List<Transactions> findByValorLessThan() {
-        return transactionsRepository.findByValorLessThan(-0d);
+    public List<Transactions> findByAmountLessThan() {
+        return transactionsRepository.findByAmountLessThan(-0d);
     }
 
     @Override
     public List<Transactions> findExpensesByDate(String startDate, String endDate) {
-        return transactionsRepository.findByDataBetweenAndValorLessThan(startDate, endDate, -0d);
+        return transactionsRepository.findByDateBetweenAndAmountLessThan(startDate, endDate, -0d);
     }
 }

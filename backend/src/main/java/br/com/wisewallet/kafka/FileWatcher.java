@@ -2,6 +2,7 @@ package br.com.wisewallet.kafka;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,15 +13,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service("customFileWatcher")
 public class FileWatcher {
-
-    private final static String directoryToWatch = "C:/Users/lw_ba/OneDrive/Documents/Java/wise-wallet/backend/src/main/resources/statements/";
 
     private final KafkaFileProducer kafkaFileProducer;
     private final Set<Path> processedFiles = new HashSet<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private WatchService watchService;
+
+    private final static String directoryToWatch = "E:/Code/kafka-files/";
 
     public FileWatcher(KafkaFileProducer kafkaFileProducer) {
         this.kafkaFileProducer = kafkaFileProducer;
@@ -46,6 +48,7 @@ public class FileWatcher {
 
             while (!Thread.currentThread().isInterrupted()) {
                 WatchKey key;
+
                 try {
                     key = watchService.take();
                 } catch (InterruptedException e) {
@@ -56,8 +59,14 @@ public class FileWatcher {
                 for (WatchEvent<?> event : key.pollEvents()) {
                     Path filePath = path.resolve((Path) event.context());
                     if (filePath.toString().endsWith(".csv") && !processedFiles.contains(filePath)) {
-                        kafkaFileProducer.sendMessage(filePath);
-                        processedFiles.add(filePath);
+                        try {
+                            Thread.sleep(1000);
+                            kafkaFileProducer.sendMessage(filePath);
+                            processedFiles.add(filePath);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            log.error("Erro ao aguardar antes de processar o arquivo: {}", filePath, e);
+                        }
                     }
                 }
                 key.reset();
