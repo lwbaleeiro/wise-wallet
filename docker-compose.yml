@@ -1,0 +1,19 @@
+# meu-app-financeiro/docker-compose.yml
+version: '3.8' # Versão da especificação do Docker Compose
+
+services:
+  db:
+    image: postgres:15 # Imagem oficial do PostgreSQL (versão 15 ou outra de sua preferência)
+    container_name: meu_app_postgres # Nome do container
+    restart: always # Sempre reiniciar o container se ele parar
+    environment:
+      POSTGRES_USER: admin      # Usuário do banco de dados
+      POSTGRES_PASSWORD: admin  # Senha do banco de dados (troque por uma senha segura em produção!)
+      POSTGRES_DB: financas_db  # Nome do banco de dados a ser criado
+    ports:
+      - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persiste os dados do banco fora do container
+
+volumes:
+  postgres_data: # Define o volume nomeado para persistência
