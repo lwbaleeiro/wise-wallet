@@ -1,19 +1,18 @@
-# meu-app-financeiro/docker-compose.yml
-version: '3.8' # Versão da especificação do Docker Compose
+version: '3.8'
 
 services:
   db:
-    image: postgres:15 # Imagem oficial do PostgreSQL (versão 15 ou outra de sua preferência)
-    container_name: meu_app_postgres # Nome do container
-    restart: always # Sempre reiniciar o container se ele parar
+    image: postgres:15
+    container_name: wise_wallet
+    restart: always
     environment:
-      POSTGRES_USER: admin      # Usuário do banco de dados
-      POSTGRES_PASSWORD: admin  # Senha do banco de dados (troque por uma senha segura em produção!)
-      POSTGRES_DB: financas_db  # Nome do banco de dados a ser criado
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: wise_wallet_dbs
     ports:
-      - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data # Persiste os dados do banco fora do container
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data: # Define o volume nomeado para persistência
