@@ -18,9 +18,7 @@ router.get('/google/callback',
         // Autenticação bem-sucedida! O usuário está em req.user
         // Redireciona o usuário de volta para o frontend
         console.log("Callback do Google recebido, usuário:", req.user);
-        // TODO: Redirecionar para uma URL específica do frontend
-        // Ex: res.redirect('http://localhost:5173/dashboard'); 
-        res.redirect('http://localhost:5173'); // Redireciona para a raiz do frontend por enquanto
+        res.redirect('http://localhost:5173/dashboard');
     }
 );
 
