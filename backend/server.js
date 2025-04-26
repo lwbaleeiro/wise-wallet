@@ -17,10 +17,17 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const app = express();
 const PORT = process.env.BACKEND_PORT || 3001;
 
-// Configuração do CORS
-app.use(cors({
+const corsOptions = {
   origin: 'http://localhost:5173',
-}));
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// // Configuração do CORS
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+// }));
+
 
 // Middlewares
 app.use(express.json());
