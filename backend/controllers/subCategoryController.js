@@ -3,11 +3,11 @@ const pool = require('../config/db');
 
 // --- Criar subCategoria ---
 exports.createSubCategory = async (req, res) => {
-    // !!! ATENÇÃO: user_id virá da autenticação no futuro. Por agora, pegamos do body. !!!
-    const { name, categoryId, userId } = req.body; 
+    const { name, categoryId } = req.body; 
+    const { userId } = req.user.id;
 
-    if (!name || !userId) {
-        return res.status(400).json({ error: 'Nome da categoria e userId são obrigatórios.' });
+    if (!name) {
+        return res.status(400).json({ error: 'Nome da categoria é obrigatório.' });
     }
 
     if (!categoryId) { 
@@ -22,7 +22,6 @@ exports.createSubCategory = async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('Erro ao criar subcategoria:', err);
-        // Verifica erro de constraint única (nome duplicado para o mesmo usuário)
         if (err.code === '23505' && err.constraint === 'subcategories_user_id_name_unique') {
             return res.status(409).json({ error: 'Já existe uma subcategoria com este nome para este usuário.' });
         }
@@ -32,12 +31,7 @@ exports.createSubCategory = async (req, res) => {
 
 // --- Buscar Todas as SubCategorias Ativas de um Usuário ---
 exports.getActiveSubCategoriesByUser = async (req, res) => {
-    // !!! ATENÇÃO: user_id virá da autenticação no futuro. Por agora, pegamos da query string. !!!
-    const { userId } = req.query; 
-
-    if (!userId) {
-        return res.status(400).json({ error: 'userId é obrigatório como query parameter.' });
-    }
+    const userId  = req.query; 
 
     try {
         const result = await pool.query(
@@ -54,12 +48,7 @@ exports.getActiveSubCategoriesByUser = async (req, res) => {
 // --- Buscar SubCategoria por ID ---
 exports.getSubCategoryById = async (req, res) => {
     const { id } = req.params;
-    // !!! ATENÇÃO: user_id virá da autenticação no futuro. Por agora, pegamos da query string. !!!
-    const { userId } = req.query; 
-
-    if (!userId) {
-        return res.status(400).json({ error: 'userId é obrigatório como query parameter.' });
-    }
+    const { userId } = req.user.id; 
 
     try {
         const result = await pool.query(
@@ -81,11 +70,7 @@ exports.getSubCategoryById = async (req, res) => {
 exports.getSubCategoryByCategoryId = async (req, res) => {
 
     const { categoryId } = req.body; 
-    const { userId } = req.query; 
-
-    if (!userId) {
-        return res.status(400).json({ error: 'userId é obrigatório como query parameter.' });
-    }
+    const { userId } = req.user.id; 
 
     if (!categoryId) { 
         return res.status(400).json({ error: 'categoryId é obrigatório.' });
@@ -111,18 +96,14 @@ exports.getSubCategoryByCategoryId = async (req, res) => {
 exports.updateSubCategory = async (req, res) => {
     
     const { id } = req.params;
-    const { name, isActive, userId } = req.body; 
-
-    if (!userId) {
-        return res.status(400).json({ error: 'userId é obrigatório no corpo da requisição.' });
-    }
+    const { name, isActive } = req.body; 
+    const userId = req.user.id;
 
     // Permite atualizar nome ou status ou ambos
     if (name === undefined && isActive === undefined) {
          return res.status(400).json({ error: 'Pelo menos um campo (name ou isActive) deve ser fornecido para atualização.' });
     }
 
-    // Constrói a query dinamicamente para atualizar apenas os campos fornecidos
     const fields = [];
     const values = [];
     let query = 'UPDATE sub subcategories SET ';
@@ -136,7 +117,6 @@ exports.updateSubCategory = async (req, res) => {
         values.push(isActive);
     }
     
-    // Adiciona updated_at (trigger deve fazer isso, mas garantimos aqui também)
     fields.push(`updated_at = CURRENT_TIMESTAMP`); 
 
     query += fields.join(', ');
@@ -163,12 +143,7 @@ exports.updateSubCategory = async (req, res) => {
 // --- Desativar Categoria (Soft Delete) ---
 exports.deactivateSubCategory = async (req, res) => {
     const { id } = req.params;
-     // !!! ATENÇÃO: user_id virá da autenticação no futuro. Por agora, pegamos da query string. !!!
-    const { userId } = req.query;
-
-    if (!userId) {
-        return res.status(400).json({ error: 'userId é obrigatório como query parameter.' });
-    }
+    const userId = req.user.id;
 
     try {
         const result = await pool.query(
@@ -176,10 +151,10 @@ exports.deactivateSubCategory = async (req, res) => {
             [id, userId]
         );
 
-        if (result.rowCount === 0) { // Verifica se alguma linha foi afetada
+        if (result.rowCount === 0) {
             return res.status(404).json({ error: 'SubCategoria não encontrada ou pertence a outro usuário.' });
         }
-        res.status(200).json({ message: 'SubCategoria desativada com sucesso.' }); // Responde com sucesso
+        res.status(200).json({ message: 'SubCategoria desativada com sucesso.' });
     } catch (err) {
         console.error('Erro ao desativar subcategoria:', err);
         res.status(500).json({ error: 'Erro interno ao desativar categoria.' });

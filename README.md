@@ -7,8 +7,8 @@ Um aplicativo web simples para controle financeiro pessoal, permitindo o upload 
 * [ ] Autenticação de usuário via Google Authentication.
 * [ ] Upload de arquivos `.csv` contendo transações financeiras.
 * [ ] Listagem e filtragem de transações.
-* [ ] CRUD (Criar, Ler, Atualizar, Desativar) para Categorias.
-* [ ] CRUD (Criar, Ler, Atualizar, Desativar) para Subcategorias (vinculadas a Categorias).
+* [ x ] CRUD (Criar, Ler, Atualizar, Desativar) para Categorias.
+* [ x ] CRUD (Criar, Ler, Atualizar, Desativar) para Subcategorias (vinculadas a Categorias).
 * [ ] Dashboard inicial com resumo financeiro.
 * [ ] (Opcional) Integração com LLM para insights financeiros.
 
