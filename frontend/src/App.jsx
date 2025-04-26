@@ -6,9 +6,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
-// import Categories from './pages/Categories';
-// import Subcategories from './pages/Subcategories';
-// import Layout from './components/layout/Layout';
+import Categories from './pages/Categories';
+import Subcategories from './pages/Subcategories';
+import Layout from './components/layout/Layout';
 
 // Componente para rotas protegidas
 const ProtectedRoute = ({ children }) => {
