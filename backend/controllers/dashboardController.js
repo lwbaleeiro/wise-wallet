@@ -3,7 +3,7 @@ const pool = require('../config/db');
 const { 
     startOfMonth, endOfMonth, startOfYear, endOfYear, 
     format, isValid, parseISO 
-} = require('date-fns'); // Funções do date-fns
+} = require('date-fns');
 
 exports.getDashboardSummary = async (req, res) => {
     const userId = req.user.id;
