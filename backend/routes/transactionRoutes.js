@@ -1,11 +1,11 @@
 // backend/routes/transactionRoutes.js
 const express = require('express');
 const transactionController = require('../controllers/transactionController');
-const { isAuthenticated } = require('../middleware/authMiddleware'); // Reutiliza o middleware de autenticação
+const { isAuthenticated } = require('../middleware/authMiddleware'); 
+const { uploadCsv } = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
-// Aplica autenticação a todas as rotas de transação
 router.use(isAuthenticated);
 
 // --- Rotas Protegidas ---
@@ -29,5 +29,13 @@ router.put('/:id', transactionController.updateTransaction);
 // Deletar uma transação (Hard Delete)
 // DELETE /api/transactions/:id
 router.delete('/:id', transactionController.deleteTransaction);
+
+// Rota para upload de CSV
+// POST /api/transactions/upload-csv
+router.post(
+    '/upload-csv', 
+    uploadCsv,
+    transactionController.uploadCsvTransactions
+);
 
 module.exports = router;

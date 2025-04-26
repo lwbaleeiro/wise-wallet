@@ -1,6 +1,8 @@
 // backend/controllers/transactionController.js
 const pool = require('../config/db');
 const { validate: uuidValidate } = require('uuid');
+const csv = require('csv-parser');
+const { Readable } = require('stream');
 
 // Helper function para validar Categoria/Subcategoria (propriedade e vínculo)
 const validateCategorySubcategory = async (userId, categoryId, subcategoryId) => {
@@ -31,7 +33,6 @@ const validateCategorySubcategory = async (userId, categoryId, subcategoryId) =>
 
     return { valid: true };
 };
-
 
 // --- Criar Transação ---
 exports.createTransaction = async (req, res) => {
@@ -239,4 +240,164 @@ exports.deleteTransaction = async (req, res) => {
         console.error('Erro ao deletar transação:', err);
         res.status(500).json({ error: 'Erro interno ao deletar transação.' });
     }
+};
+
+// --- Upload de Transações via CSV ---
+exports.uploadCsvTransactions = async (req, res) => {
+    const userId = req.user.id;
+
+    if (!req.file) {
+        return res.status(400).json({ error: 'Nenhum arquivo CSV enviado.' });
+    }
+
+    const transactionsToInsert = [];
+    const skippedRows = []; // Para rastrear linhas puladas (ex: duplicadas)
+    const errorRows = []; // Para rastrear linhas com erros de formato/dados
+
+    // Cria um stream legível a partir do buffer do arquivo carregado na memória
+    const bufferStream = new Readable();
+    bufferStream.push(req.file.buffer);
+    bufferStream.push(null); // Sinaliza fim do stream
+
+    bufferStream
+        .pipe(csv({
+            mapHeaders: ({ header }) => header.trim() // Remove espaços extras dos cabeçalhos
+         }))
+        .on('data', (row) => {
+            // Processa cada linha do CSV
+            const dataOriginal = row['Data'];
+            const valorOriginal = row['Valor'];
+            const identificador = row['Identificador'];
+            const descricao = row['Descrição'];
+            let linha = (transactionsToInsert.length + skippedRows.length + errorRows.length + 1); // Número aproximado da linha
+
+            // 1. Validações e Transformações Essenciais
+            if (!dataOriginal || !valorOriginal || !identificador || !descricao) {
+                 errorRows.push({ line: linha, data: row, error: 'Colunas faltando (Data, Valor, Identificador, Descrição).' });
+                 return; // Pula esta linha
+            }
+
+            // 2. Parse e Valida Data (DD/MM/YYYY -> YYYY-MM-DD)
+            const dateParts = dataOriginal.split('/');
+            let formattedDate;
+            if (dateParts.length === 3) {
+                // Formata como YYYY-MM-DD - CUIDADO com mês/dia (DD/MM vs MM/DD)
+                // Assumindo DD/MM/YYYY baseado no exemplo
+                const [day, month, year] = dateParts;
+                // Verifica se são números válidos antes de criar a data
+                 if (!isNaN(parseInt(day)) && !isNaN(parseInt(month)) && !isNaN(parseInt(year))) {
+                    formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                     // Validação extra: Tenta criar um objeto Date para ver se é válido
+                     if (isNaN(new Date(formattedDate).getTime())) {
+                        errorRows.push({ line: linha, data: row, error: `Formato de Data inválido: ${dataOriginal}` });
+                        return;
+                     }
+                 } else {
+                     errorRows.push({ line: linha, data: row, error: `Formato de Data inválido: ${dataOriginal}` });
+                     return;
+                 }
+            } else {
+                errorRows.push({ line: linha, data: row, error: `Formato de Data inválido: ${dataOriginal}` });
+                return; // Pula esta linha
+            }
+
+            // 3. Parse e Valida Valor (determina tipo)
+            const amount = parseFloat(valorOriginal.replace(',', '.')); // Substitui vírgula se houver
+            if (isNaN(amount)) {
+                errorRows.push({ line: linha, data: row, error: `Valor inválido: ${valorOriginal}` });
+                return; // Pula esta linha
+            }
+            const type = amount >= 0 ? 'income' : 'expense';
+
+            // Adiciona a transação formatada à lista para inserção
+            transactionsToInsert.push({
+                user_id: userId,
+                description: descricao.trim(),
+                amount: amount, // Mantém o sinal original
+                date: formattedDate,
+                type: type,
+                source_transaction_id: identificador.trim(),
+                // category_id e subcategory_id serão null por padrão
+                category_id: null, 
+                subcategory_id: null,
+                notes: null // Ou talvez adicionar algo como "Importado via CSV"?
+            });
+        })
+        .on('end', async () => {
+            // Processamento terminou, agora insere no banco
+            if (transactionsToInsert.length === 0 && errorRows.length === 0) {
+                return res.status(400).json({ message: 'Nenhuma transação válida encontrada no arquivo CSV.', errors: errorRows, skipped: skippedRows });
+            }
+
+            let successfulInserts = 0;
+            const failedInserts = []; // Para erros durante a inserção (ex: duplicatas)
+
+            // Usa uma transação SQL para inserir tudo ou nada (ou quase tudo)
+            const client = await pool.connect();
+            try {
+                await client.query('BEGIN');
+
+                // Prepara os dados para UNNEST - mais eficiente para bulk insert
+                const values = transactionsToInsert.map(tx => [
+                    tx.user_id, tx.description, tx.amount, tx.date, tx.type, tx.source_transaction_id,
+                    tx.category_id, tx.subcategory_id, tx.notes
+                ]);
+
+                // Query usando UNNEST
+                // ON CONFLICT tenta lidar com duplicatas (baseado na constraint unique)
+                const insertQuery = `
+                    INSERT INTO transactions (
+                        user_id, description, amount, date, type, source_transaction_id, 
+                        category_id, subcategory_id, notes
+                    ) 
+                    SELECT * FROM UNNEST(
+                        $1::uuid[], $2::varchar[], $3::numeric[], $4::date[], $5::varchar[], $6::varchar[],
+                        $7::uuid[], $8::uuid[], $9::text[]
+                    )
+                    ON CONFLICT (user_id, source_transaction_id) DO NOTHING -- Ignora linhas duplicadas
+                    RETURNING id; -- Retorna IDs das linhas inseridas com sucesso
+                `;
+
+                // Separa os arrays por tipo
+                const params = [
+                    values.map(v => v[0]), values.map(v => v[1]), values.map(v => v[2]), values.map(v => v[3]),
+                    values.map(v => v[4]), values.map(v => v[5]), values.map(v => v[6]), values.map(v => v[7]),
+                    values.map(v => v[8])
+                ];
+
+                const result = await client.query(insertQuery, params);
+                successfulInserts = result.rowCount; // Número de linhas realmente inseridas
+
+                // Calcula as duplicadas que foram ignoradas pelo ON CONFLICT
+                const duplicates = transactionsToInsert.length - successfulInserts;
+                for (let i = 0; i < duplicates; i++) {
+                     skippedRows.push({ error: 'Duplicata ignorada (user_id, source_transaction_id)' });
+                 }
+
+                await client.query('COMMIT');
+
+                 res.status(200).json({
+                    message: `Importação concluída.`,
+                    success: successfulInserts,
+                    duplicates_skipped: duplicates,
+                    errors_parsing: errorRows.length,
+                    error_details: errorRows // Retorna detalhes dos erros de parsing
+                });
+
+            } catch (dbError) {
+                await client.query('ROLLBACK');
+                console.error('Erro no banco de dados durante a inserção em lote:', dbError);
+                res.status(500).json({
+                    error: 'Erro no banco de dados ao salvar transações.',
+                    parsing_errors: errorRows, // Mesmo com erro no DB, informa erros de parsing
+                    message_details: dbError.message 
+                });
+            } finally {
+                client.release(); // Libera a conexão de volta para o pool
+            }
+        })
+        .on('error', (parseError) => {
+             console.error('Erro ao parsear CSV:', parseError);
+             res.status(400).json({ error: 'Erro ao ler o arquivo CSV.', details: parseError.message });
+        });
 };
