@@ -6,6 +6,7 @@ require('./config/passport-setup');
 const session = require('express-session');
 const passport = require('passport');
 const express = require('express');
+const cors = require('cors');
 
 const categoryRoutes = require('./routes/categoryRoutes'); 
 const subCategoryRoutes = require('./routes/subCategoryRoutes'); 
@@ -15,6 +16,11 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 const PORT = process.env.BACKEND_PORT || 3001;
+
+// Configuração do CORS
+app.use(cors({
+  origin: 'http://localhost:5173',
+}));
 
 // Middlewares
 app.use(express.json());
