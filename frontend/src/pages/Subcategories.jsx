@@ -71,10 +71,10 @@ export default function Subcategories() {
         <h1 className="text-2xl font-bold text-gray-900">Subcategorias</h1>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           <PlusIcon className="h-4 w-4 mr-1" />
-          Nova Subcategoria
+          Nova Subcategoria          
         </button>
       </div>
 
@@ -82,26 +82,28 @@ export default function Subcategories() {
         <ul className="divide-y divide-gray-200">
           {subcategories.map((subcategory) => (
             <li key={subcategory.id}>
-              <div className="px-4 py-4 sm:px-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="text-sm font-medium text-gray-900">
-                      {subcategory.name}
-                    </div>
-                    <div className="ml-4 text-sm text-gray-500">
-                      {subcategory.description}
-                    </div>
-                    {subcategory.category && (
-                      <div className="ml-4 text-sm text-gray-500">
-                        Categoria: {subcategory.category.name}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 p-4">
+                <div className="bg-white rounded-lg p-4 shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {subcategory.name}
                       </div>
-                    )}
-                  </div>
-                  <div className="flex items-center">
-                    <button onClick={() => handleEditClick(subcategory)} className="text-indigo-500 hover:text-indigo-700 mr-2">
-                      <PencilSquareIcon className="h-5 w-5" />
-                    </button>
-                    <button onClick={() => handleDeleteClick(subcategory)} className="text-red-500 hover:text-red-700"><TrashIcon className="h-5 w-5" /></button>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {subcategory.description}
+                      </div>
+                      {subcategory.category && (
+                        <div className="mt-1 text-sm text-gray-500">
+                          Categoria: {subcategory.category.name}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center">
+                      <button onClick={() => handleEditClick(subcategory)} className="text-indigo-500 hover:text-indigo-700 mr-2">
+                        <PencilSquareIcon className="h-5 w-5" />
+                      </button>
+                      <button onClick={() => handleDeleteClick(subcategory)} className="text-red-500 hover:text-red-700"><TrashIcon className="h-5 w-5" /></button>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -72,7 +72,7 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
             </div>
 
             <form onSubmit={handleSubmit} className="mt-4">
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                     Nome
@@ -84,7 +84,7 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       required
                     />
                   </div>
@@ -101,7 +101,7 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
                       rows={3}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border border-gray-300 rounded-md"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
                           name="categoryId"
                           value={categoryId}
                           onChange={(e) => setCategoryId(e.target.value)}
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                           required
                         >
                           <option value="">Selecione uma categoria</option>
@@ -144,17 +144,17 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm disabled:bg-indigo-300"
+                  className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-300"
                 >
                   {loading ? 'Criando...' : 'Criar Subcategoria'}
                 </button>
                 <button
                   type="button"
                   disabled={loading}
-                  onClick={onClose}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm disabled:bg-gray-100"
+                   onClick={onClose} 
+                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-gray-100"
                 >
-                  Cancelar
+                  Cancelar 
                 </button>
               </div>
             </form>
