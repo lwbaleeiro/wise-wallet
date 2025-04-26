@@ -1,6 +1,7 @@
 // src/components/transactions/UploadCSVModal.jsx
 import { useState } from 'react';
 import { XMarkIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import Papa from 'papaparse';
 import api from '../../services/api';
 
 export default function UploadCSVModal({ isOpen, onClose, onUploadSuccess }) {
@@ -27,22 +28,51 @@ export default function UploadCSVModal({ isOpen, onClose, onUploadSuccess }) {
     }
 
     try {
-      setUploading(true);
-      setError('');
-      
-      const formData = new FormData();
-      formData.append('csvfile', file);
-      
-      await api.post('/transactions/upload-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+        setUploading(true);
+        setError('');
+        
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const csvData = event.target.result;
+          Papa.parse(csvData, {
+            header: true,
+            complete: async (results) => {
+              if (results.errors.length > 0) {
+                console.error('Erro ao processar o CSV:', results.errors);
+                setError('Erro ao processar o CSV. Verifique o formato do arquivo.');
+                setUploading(false);
+                return;
+              }
+              const transactions = results.data.map(row => ({
+                date: row.date,
+                description: row.description,
+                amount: parseFloat(row.amount),
+                type: row.type,
+                categoryName: row.category,
+                subCategoryName: row.subCategory,
+                notes: row.notes
+              }));
+              
+              const formData = new FormData();
+              formData.append('transactions', JSON.stringify(transactions));
+              
+              try {
+                await api.post('/transactions/upload-csv', formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                });
+                onUploadSuccess();
+              } catch (apiError) {
+                console.error('Erro ao enviar para a API:', apiError);
+                setError('Ocorreu um erro ao enviar os dados para o servidor.');
+              } finally {
+                setUploading(false);
+              }
+            }
+          });
         }
-      });
-      
-      onUploadSuccess();
-    } catch (error) {
-      console.error('Erro ao fazer upload do arquivo:', error);
-      setError('Ocorreu um erro ao processar o arquivo. Verifique se o formato está correto.');
+        reader.readAsText(file);
     } finally {
       setUploading(false);
     }
