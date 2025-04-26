@@ -2,6 +2,14 @@
 
 Um aplicativo web simples para controle financeiro pessoal, permitindo o upload de transações via CSV, categorização e visualização de resumos financeiros.
 
+## Logar
+* http://localhost:3001/api/auth/google
+    * Após o login bem-sucedido no navegador, use as ferramentas de desenvolvedor do navegador (aba "Network" ou "Application" > "Cookies") para encontrar o cookie de sessão (geralmente chamado connect.sid para express-session).
+    * No Postman/Insomnia, adicione um Header Cookie a todas as suas requisições para as rotas protegidas, com o valor connect.sid=SEU_VALOR_DO_COOKIE_AQUI.
+* http://localhost:3001/api/auth/me
+* http://localhost:3001/api/auth/logout
+
+
 ## Funcionalidades Planejadas
 
 * [ ] Autenticação de usuário via Google Authentication.
