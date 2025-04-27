@@ -1,0 +1,62 @@
+/* frontend/src/global.css */
+
+body {
+  background-color: #121212; /* Dark background */
+  color: #e0e0e0; /* Light text */
+  font-family: sans-serif; /* Default font */
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: #2e2e2e; /* Dark button background */
+  color: #e0e0e0; /* Light button text */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #444; /* Slightly lighter on hover */
+}
+
+a {
+  color: #64b5f6; /* Light blue link color */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card {
+    background-color: #1e1e1e; /* Slightly lighter than body */
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select,
+textarea {
+  background-color: #2e2e2e; /* Dark input background */
+  color: #e0e0e0; /* Light input text */
+  border: 1px solid #444; /* Darker border */
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #64b5f6; /* Highlight border on focus */
+  box-shadow: 0 0 5px rgba(100, 181, 246, 0.5);
+}
