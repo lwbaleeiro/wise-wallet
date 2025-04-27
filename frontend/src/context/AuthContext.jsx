@@ -8,6 +8,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userParam = urlParams.get('user');
+
+    if (userParam) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userParam));
+        setUser(userData);
+        // Remove o parâmetro 'user' da URL após a extração
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch (error) {
+        console.error('Erro ao analisar dados do usuário da URL:', error);
+      }
+    }
+  }, []);
+
   const checkAuth = async () => {
     setLoading(true)
     try {
@@ -19,9 +35,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-
-
 
   const login = () => {
     window.location.href = 'http://localhost:3001/api/auth/google';

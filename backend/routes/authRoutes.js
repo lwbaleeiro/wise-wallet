@@ -15,11 +15,10 @@ router.get('/google', passport.authenticate('google', {
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login/failed' }), // Redireciona se falhar
     (req, res) => {
-        // Autenticação bem-sucedida! O usuário está em req.user
-        // Redireciona o usuário de volta para o frontend
-        console.log("Callback do Google recebido, usuário:", req.user);
-        res.redirect('http://localhost:5173/dashboard');
-    }
+       const user = encodeURIComponent(JSON.stringify(req.user));
+       res.redirect(`http://localhost:5173/?user=${user}`);
+
+    },
 );
 
 // Rota para verificar se o usuário está logado (útil para o frontend)
