@@ -4,10 +4,10 @@ const pool = require('../config/db');
 // --- Criar subCategoria ---
 exports.createSubCategory = async (req, res) => {
     const { name, categoryId } = req.body; 
-    const { userId } = req.user.id;
+    const userId = req.user.id;
 
     if (!name) {
-        return res.status(400).json({ error: 'Nome da categoria é obrigatório.' });
+        return res.status(400).json({ error: 'Nome da subcategoria é obrigatório.' });
     }
 
     if (!categoryId) { 
@@ -31,7 +31,7 @@ exports.createSubCategory = async (req, res) => {
 
 // --- Buscar Todas as SubCategorias Ativas de um Usuário ---
 exports.getActiveSubCategoriesByUser = async (req, res) => {
-    const userId  = req.query; 
+    const userId  = req.user.id; 
 
     try {
         const result = await pool.query(

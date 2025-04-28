@@ -21,6 +21,6 @@ router.get('/:id', categoryController.getCategoryById);
 router.put('/:id', categoryController.updateCategory);
 
 // DELETE /api/categories/:id
-router.delete('/:id', categoryController.deactivateCategory); // Usando DELETE para desativar
+router.delete('/:id', categoryController.deactivateCategory);
 
 module.exports = router;

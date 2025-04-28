@@ -35,7 +35,7 @@ export default function CreateSubcategoryModal({ isOpen, onClose, onSubcategoryC
     setLoading(true);
     setError(null);
     try {
-      await api.post('/subcategories', { name, description, category_id: categoryId });
+      await api.post('/subcategories', { name, description, categoryId });
       onSubcategoryCreated();
       onClose();
       setName('');
