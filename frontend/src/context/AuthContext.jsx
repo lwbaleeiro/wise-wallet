@@ -121,10 +121,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [loading]); // Dependência em loading para evitar chamadas concorrentes? Ou [] se for estável.
 
-
-  // Log final antes de prover o contexto
-   console.log('AuthProvider Render: User:', user, 'Loading:', loading);
-
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, checkAuth}}>
       {children}

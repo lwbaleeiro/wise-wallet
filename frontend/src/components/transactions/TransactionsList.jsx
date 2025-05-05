@@ -1,4 +1,4 @@
-// src/components/transactions/TransactionsList.jsx
+// src/components/transactions/TransactionsList.jsx 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -41,8 +41,7 @@ export default function TransactionsList({ transactions, loading, onEdit, onDele
                       {transaction.description}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {transaction.category?.name || 'Sem categoria'} 
-                      {transaction.subcategory && ` > ${transaction.subcategory.name}`}
+                      {transaction.category_name || 'Sem categoria '} | {transaction.subcategory_name || 'Sem subcategoria'}  
                     </div>
                   </div>
                 </div>
