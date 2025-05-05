@@ -193,7 +193,7 @@ exports.updateTransaction = async (req, res) => {
         if (notes !== undefined) fieldsToUpdate.notes = notes;
          
         // Adiciona updated_at (o trigger também faz isso)
-        fieldsToUpdate.updated_at = 'CURRENT_TIMESTAMP'; 
+        fieldsToUpdate.updated_at = 'NOW();'; 
 
         const fieldNames = Object.keys(fieldsToUpdate);
         if (fieldNames.length === 0) {

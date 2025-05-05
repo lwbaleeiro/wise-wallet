@@ -123,10 +123,11 @@ export default function TransactionModal({ isOpen, onClose, onSave, transaction 
                       type="number"
                       id="amount"
                       step="0.01"
-                      min="0"
+                      min="-9999999999"
+                      max="9999999999"
                       {...register('amount', { 
                         required: 'Valor é obrigatório',
-                        min: { value: 0.01, message: 'Valor deve ser maior que zero' }
+                        validate: { notZero: (value) => { return parseFloat(value) !== 0 || 'O valor não pode ser zero'; }}
                       })}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
