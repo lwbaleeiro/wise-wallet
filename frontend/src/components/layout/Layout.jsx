@@ -71,11 +71,10 @@ const Layout = () => {
       {/* Main column */}
       <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
         {/* Main content area */}
-        <main className="flex-1 pb-8">
+        <main className="flex-1 pb-8 overflow-y-auto min-h-screen">
           <div className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <h1 className="text-2xl font-semibold text-gray-900 hidden lg:block">
-                {/* Display current page title */}
                 {navigation.find(item => location.pathname === item.href)?.name || 'Dashboard'}
               </h1>
             </div>
